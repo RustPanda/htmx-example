@@ -21,7 +21,7 @@ impl CounterRepository for InMemoryCounterRepository {
         self.counter.value -= 1;
     }
 
-    fn get(&self) -> Counter {
-        self.counter
+    fn get_value(&self) -> i32 {
+        self.counter.value
     }
 }

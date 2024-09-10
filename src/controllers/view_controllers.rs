@@ -24,17 +24,17 @@ struct IndexTemplate<'a> {
 }
 
 pub async fn counter(State(use_case): State<CounterUseCase>) -> impl IntoResponse {
-    let Counter { value } = use_case.get().await;
+    let counter = use_case.get_value().await;
 
-    CounterTemplate { counter: value }
+    CounterTemplate { counter }
 }
 
 pub async fn index(State(use_case): State<CounterUseCase>) -> impl IntoResponse {
-    let Counter { value } = use_case.get().await;
+    let counter = use_case.get_value().await;
 
     IndexTemplate {
         name: "Maria",
-        counter: value,
+        counter,
     }
 }
 

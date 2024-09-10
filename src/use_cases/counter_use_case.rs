@@ -1,6 +1,6 @@
 use std::sync::{Arc, Mutex};
 
-use crate::domain::{models::Counter, repositories::CounterRepository};
+use crate::domain::repositories::CounterRepository;
 
 #[derive(Clone)]
 pub struct CounterUseCase {
@@ -24,8 +24,8 @@ impl CounterUseCase {
         repo.decrement();
     }
 
-    pub async fn get(&self) -> Counter {
+    pub async fn get_value(&self) -> i32 {
         let repo = self.repo.lock().unwrap();
-        repo.get()
+        repo.get_value()
     }
 }

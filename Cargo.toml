@@ -8,7 +8,7 @@ opt-level = 3
 
 
 [dependencies]
-axum = "0.7.5"
+axum = { version = "0.7.5", features = ["macros"] }
 rinja = { version = "0.3.2", features = ["with-axum"] }
 rinja_axum = "0.3.2"
 tokio = { version = "1.40.0", features = [

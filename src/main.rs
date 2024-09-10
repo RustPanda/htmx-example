@@ -1,42 +1,34 @@
 use std::time::Duration;
 
-use axum::{response::IntoResponse, routing, Router};
-use rinja_axum::Template;
+use axum::{extract::FromRef, Router};
 use tokio::net::TcpListener;
 use tower_http::{timeout::TimeoutLayer, trace::TraceLayer};
+use use_cases::counter_use_case::CounterUseCase;
 
-#[derive(Template)]
-#[template(path = "index.jinja", ext = "html")]
-struct IndexTemplate<'a> {
-    name: &'a str,
-    count: i32,
-}
+mod controllers;
+mod domain;
+mod repositories;
+mod use_cases;
 
-#[derive(Template)]
-#[template(path = "counter.jinja", ext = "html")]
-struct CounterTemplate {
-    count: i32,
-}
-
-async fn index() -> impl IntoResponse {
-    IndexTemplate {
-        name: "Maria",
-        count: 0,
-    }
-}
-
-async fn counter() -> impl IntoResponse {
-    CounterTemplate { count: 1 }
+#[derive(FromRef, Clone)]
+struct AppState {
+    counter_use_case: CounterUseCase,
 }
 
 #[tokio::main]
 async fn main() {
     tracing_subscriber_init().unwrap();
 
+    let counter_repository = repositories::in_memory_repository::InMemoryCounterRepository::new(0);
+    let counter_use_case = use_cases::counter_use_case::CounterUseCase::new(counter_repository);
+
+    let state = AppState { counter_use_case };
+
     // Create a regular axum app.
     let app = Router::new()
-        .route("/", routing::get(index))
-        .route("/counter", routing::get(counter))
+        .nest("/", controllers::ViewControllers::new())
+        .nest("/api/counter", controllers::CounterControllers::new())
+        .with_state(state)
         .layer((
             TraceLayer::new_for_http(),
             // Graceful shutdown will wait for outstanding requests to complete. Add a timeout so

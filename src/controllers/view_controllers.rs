@@ -8,7 +8,7 @@ use axum::{
 };
 use rinja_axum::Template;
 
-use crate::{domain::models::Counter, use_cases::counter_use_case::CounterUseCase};
+use crate::use_cases::counter_use_case::CounterUseCase;
 
 #[derive(Template)]
 #[template(path = "counter.jinja", ext = "html")]
@@ -18,8 +18,7 @@ struct CounterTemplate {
 
 #[derive(Template)]
 #[template(path = "index.jinja", ext = "html")]
-struct IndexTemplate<'a> {
-    name: &'a str,
+struct IndexTemplate {
     counter: i32,
 }
 
@@ -32,10 +31,7 @@ pub async fn counter(State(use_case): State<CounterUseCase>) -> impl IntoRespons
 pub async fn index(State(use_case): State<CounterUseCase>) -> impl IntoResponse {
     let counter = use_case.get_value().await;
 
-    IndexTemplate {
-        name: "Maria",
-        counter,
-    }
+    IndexTemplate { counter }
 }
 
 pub struct ViewControllers<S>

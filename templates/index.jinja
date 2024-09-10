@@ -4,14 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>&lt;/&gt;htmx-example</title>
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏳️‍⚧️</text></svg>">
+    {% include "style.html" %}
 </head>
 
 <body>
-    <h1>Hello, {{name}}!</h1>
-    <div>{% include "counter.jinja" %}</div>
+    <main id="content">
+        <h1>Welcome to <span class="logo">&lt;<b>/</b>&gt;htm<b>x</b></span></h1>
+
+        <p>Hi, my name is <span class="name">Maria</span>. This is a very simple web application in Rust demonstrating
+            the use of htmx together
+            with axum.</p>
+
+        <button id="but" hx-get="/api/counter/decrement" hx-trigger="click" hx-swap="none">Decrement</button>
+        <button hx-get="/api/counter/increment" hx-trigger="click" hx-swap="none">Increment</button>
+
+        <div hx-get="/counter" hx-trigger="htmx:afterOnLoad from:button">
+            {% include "counter.jinja" %}
+        </div>
+    </main>
+    <script src="/js/htmx.min.js"></script>
 </body>
 
 </html>

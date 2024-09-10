@@ -9,8 +9,11 @@ opt-level = 3
 
 [dependencies]
 axum = { version = "0.7.5", features = ["macros"] }
+axum-embed = "0.1.0"
+mime_guess = "2.0.5"
 rinja = { version = "0.3.2", features = ["with-axum"] }
 rinja_axum = "0.3.2"
+rust-embed = { version = "8.5.0", features = ["compression"] }
 tokio = { version = "1.40.0", features = [
     "rt-multi-thread",
     "macros",

@@ -1,6 +1,8 @@
 use std::time::Duration;
 
 use axum::{extract::FromRef, Router};
+use axum_embed::ServeEmbed;
+use rust_embed::RustEmbed;
 use tokio::net::TcpListener;
 use tower_http::{timeout::TimeoutLayer, trace::TraceLayer};
 use use_cases::counter_use_case::CounterUseCase;
@@ -9,6 +11,10 @@ mod controllers;
 mod domain;
 mod repositories;
 mod use_cases;
+
+#[derive(RustEmbed, Clone)]
+#[folder = "static"]
+struct Assets;
 
 #[derive(FromRef, Clone)]
 struct AppState {
@@ -26,8 +32,9 @@ async fn main() {
 
     // Create a regular axum app.
     let app = Router::new()
-        .nest("/", controllers::ViewControllers::new())
         .nest("/api/counter", controllers::CounterControllers::new())
+        .nest("/", controllers::ViewControllers::new())
+        .fallback_service(ServeEmbed::<Assets>::new())
         .with_state(state)
         .layer((
             TraceLayer::new_for_http(),

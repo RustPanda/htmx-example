@@ -1,5 +1,5 @@
 [package]
-name = "rinja-example"
+name = "htmx-example"
 version = "0.1.0"
 edition = "2021"
 

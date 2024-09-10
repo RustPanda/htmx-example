@@ -402,6 +402,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d231dfb89cfffdbc30e7fc41579ed6066ad03abda9e567ccafae602b97ec5024"
 
 [[package]]
+name = "htmx-example"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "axum-embed",
+ "mime_guess",
+ "rinja",
+ "rinja_axum",
+ "rust-embed",
+ "tokio",
+ "tower-http",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "http"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -878,21 +893,6 @@ dependencies = [
  "num-traits",
  "percent-encoding",
  "rinja_derive",
-]
-
-[[package]]
-name = "rinja-example"
-version = "0.1.0"
-dependencies = [
- "axum",
- "axum-embed",
- "mime_guess",
- "rinja",
- "rinja_axum",
- "rust-embed",
- "tokio",
- "tower-http",
- "tracing-subscriber",
 ]
 
 [[package]]

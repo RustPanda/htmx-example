@@ -11,7 +11,7 @@ use rinja_axum::Template;
 use tokio_stream::wrappers::BroadcastStream;
 use tokio_stream::StreamExt as _;
 
-use crate::use_cases::counter_use_case::CounterUseCase;
+use crate::{use_cases::counter_use_case::CounterUseCase, AbortableList};
 
 #[derive(Template)]
 #[template(path = "counter.jinja", ext = "html")]
@@ -39,12 +39,17 @@ pub async fn index(State(use_case): State<CounterUseCase>) -> impl IntoResponse 
 
 async fn sse_counter(
     State(use_case): State<CounterUseCase>,
+    State(abortable_list): State<AbortableList>,
 ) -> Sse<impl Stream<Item = Result<Event, axum::Error>>> {
     let stream = BroadcastStream::new(use_case.subscribe()).map(|i| {
         let counter = i.unwrap();
         let template = CounterTemplate { counter }.render().unwrap();
         Ok(Event::default().event("CounterUpdate").data(template))
     });
+
+    let (stream, abort) = stream::abortable(stream);
+
+    abortable_list.push(abort);
 
     let first = stream::once(async move {
         let counter = use_case.get_value().await;
@@ -60,6 +65,7 @@ pub struct ViewControllers<S>
 where
     S: Clone + Send + Sync + 'static,
     CounterUseCase: FromRef<S>,
+    AbortableList: FromRef<S>,
 {
     d: PhantomData<S>,
 }
@@ -68,6 +74,7 @@ impl<S> ViewControllers<S>
 where
     S: Clone + Send + Sync + 'static,
     CounterUseCase: FromRef<S>,
+    AbortableList: FromRef<S>,
 {
     pub fn new() -> Router<S> {
         Router::new()

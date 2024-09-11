@@ -73,6 +73,8 @@ async fn main() {
     // Create a `TcpListener` using tokio.
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
 
+    tracing::info!("Server run on: http://localhost:8080");
+
     // Run the server with graceful shutdown
     axum::serve(listener, app)
         .with_graceful_shutdown(shutdown_signal(abortable_list))

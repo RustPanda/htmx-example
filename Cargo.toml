@@ -3,13 +3,14 @@ name = "htmx-example"
 version = "0.1.0"
 edition = "2021"
 
-[profile.dev.package.askama_derive]
+[profile.dev.package.rinja_derive]
 opt-level = 3
 
 
 [dependencies]
-axum = { version = "0.7.5", features = ["macros"] }
+axum = { version = "0.7.5", features = ["http2", "macros"] }
 axum-embed = "0.1.0"
+futures = "0.3.30"
 mime_guess = "2.0.5"
 rinja = { version = "0.3.2", features = ["with-axum"] }
 rinja_axum = "0.3.2"
@@ -20,5 +21,6 @@ tokio = { version = "1.40.0", features = [
     "net",
     "signal",
 ] }
+tokio-stream = { version = "0.1.16", features = ["sync"] }
 tower-http = { version = "0.5.2", features = ["trace", "timeout"] }
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }

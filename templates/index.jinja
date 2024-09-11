@@ -11,6 +11,9 @@
 </head>
 
 <body>
+    <script src="/js/htmx.min.js"></script>
+    <script src="/js/sse.js"></script>
+
     <main id="content">
         <h1>Welcome to <span class="logo">&lt;<b>/</b>&gt;htm<b>x</b></span></h1>
 
@@ -21,11 +24,11 @@
         <button id="but" hx-get="/api/counter/decrement" hx-trigger="click" hx-swap="none">Decrement</button>
         <button hx-get="/api/counter/increment" hx-trigger="click" hx-swap="none">Increment</button>
 
-        <div hx-get="/counter" hx-trigger="htmx:afterOnLoad from:button">
+        <div hx-ext="sse" sse-connect="/sse_counter" sse-swap="CounterUpdate">
             {% include "counter.jinja" %}
         </div>
     </main>
-    <script src="/js/htmx.min.js"></script>
+
 </body>
 
 </html>

@@ -1,5 +1,3 @@
-use std::marker::PhantomData;
-
 use axum::{
     extract::{FromRef, State},
     http::StatusCode,
@@ -20,20 +18,13 @@ pub async fn decrement(State(use_case): State<CounterUseCase>) -> impl IntoRespo
     StatusCode::OK
 }
 
-pub struct CounterControllers<S>
-where
-    S: Clone + Send + Sync + 'static,
-    CounterUseCase: FromRef<S>,
-{
-    d: PhantomData<S>,
-}
+pub struct CounterControllers;
 
-impl<S> CounterControllers<S>
+impl<S> Into<Router<S>> for CounterControllers
 where
-    S: Clone + Send + Sync + 'static,
-    CounterUseCase: FromRef<S>,
-{
-    pub fn new() -> Router<S> {
+    S: 'static + Sync + Send + Clone,
+    CounterUseCase: FromRef<S> {
+    fn into(self) -> Router<S> {
         Router::new()
             .route("/increment", get(increment))
             .route("/decrement", get(decrement))

@@ -1,5 +1,3 @@
-use std::marker::PhantomData;
-
 use axum::{
     extract::{FromRef, State},
     response::{sse::Event, IntoResponse, Sse},
@@ -61,22 +59,14 @@ async fn sse_counter(
         .keep_alive(axum::response::sse::KeepAlive::new().text("keep-alive-text"))
 }
 
-pub struct ViewControllers<S>
-where
-    S: Clone + Send + Sync + 'static,
-    CounterUseCase: FromRef<S>,
-    AbortableList: FromRef<S>,
-{
-    d: PhantomData<S>,
-}
+pub struct ViewControllers;
 
-impl<S> ViewControllers<S>
+impl<S> Into<Router<S>> for ViewControllers
 where
-    S: Clone + Send + Sync + 'static,
+    S: 'static + Sync + Send + Clone,
     CounterUseCase: FromRef<S>,
-    AbortableList: FromRef<S>,
-{
-    pub fn new() -> Router<S> {
+    AbortableList: FromRef<S>{
+    fn into(self) -> Router<S> {
         Router::new()
             .route("/", get(index))
             .route("/counter", get(counter))

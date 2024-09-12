@@ -59,8 +59,8 @@ async fn main() {
 
     // Create a regular axum app.
     let app = Router::new()
-        .nest("/api/counter", controllers::CounterControllers::new())
-        .nest("/", controllers::ViewControllers::new())
+        .nest("/api/counter", controllers::CounterControllers.into())
+        .nest("/", controllers::ViewControllers.into())
         .fallback_service(ServeEmbed::<Assets>::new())
         .with_state(state)
         .layer((
